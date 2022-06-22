@@ -17,7 +17,7 @@ public class Accounting {
         String str_data = "";
         // Create a BufferedReader object through which to read in the input file
         try {
-            BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Kamil\\CISC1170\\test_file.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("test_file.txt"));
             // Create the file's string variables. The int and double variables will be created below when the strings are  parsed accordingly
             String firstDate, lastDate;
             // While strLine is not null (file contains inputs) then str_data gets the file in 1 line as strLine converts the multiline file into one line
