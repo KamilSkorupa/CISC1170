@@ -1,0 +1,11 @@
+Vehicle,Speed,Time
+Subway Top,55.0,12.0
+Subway Avg,17.0,12.0
+Bullet Train,270.0,24.0
+Boeing 747,656.0,18.0
+F-16,1319.0,6.0
+Bike,20.0,5.0
+Rollerblades,15.0,4.0
+Voyager-1,38210.0,24.0
+Space Shuttle,17500.0,24.0
+Parker Solar Probe,330000.0,24.0
