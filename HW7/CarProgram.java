@@ -260,10 +260,7 @@ static class FuelGauge extends Car{
             while(usedFuel > 15.0){
                 System.out.println("That distance would use more than a 15 gallon tank and cannot be completed. Please enter a shorter time to travel at the current speed.");
                     newTime = sc.nextDouble();
-                    System.out.println("Does this print 1?");
                     newDist = getSpeed(speed) * (newTime/3600.0);
-                    System.out.println("Does this print 2?");
-                    System.out.println("newDist is: " + newDist);
                     usedFuel = (newDist * (1.0/24.0) + (Math.random()/100.0));  
             }
                 while(fuel - usedFuel + newFuel <= 0.0){
