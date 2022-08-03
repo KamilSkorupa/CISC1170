@@ -6,14 +6,16 @@ public class CarProgram {
     public static void main(String[] args)throws Exception{
 
         // Method variables
-        int modelYear, modelY, secs, sec, maxSpeed;
+        int modelYear, modelY, secs, maxSpeed;
         int carSpeed = 0;
-        double fuel = 15.0;
+        double fuel = 10.0;
+        double allowedFuel;
         double odometer = 999998.0;
         double distance = 0.0;
         double distance2 = 0.0;
         String carMake, makeOfCar;
         char decision = 'c';
+        char choice = 'q';
 
         // Scanner object
         Scanner sc = new Scanner(System.in);
@@ -49,72 +51,126 @@ public class CarProgram {
         System.out.println();
         System.out.println("FOR DEMONSTRATION PURPOSES THE CAR SPEED IS ASSUMED TO CHANGE ONLY EVERY 30 SECONDS, UNLESS DRIVE TIME IS CHOSEN");
 
-        while(carSpeed >= 0 || carSpeed <= maxSpeed){
-            if(carSpeed == 0){
-                System.out.println("Car: STOPPED. Can only accelerate or maintain stopped position. a = accelerate, c = continue, z = terminate program.");
-                decision = sc.next().charAt(0);
-                    if(decision == 'z'){
-                        System.exit(0);
-                    } else if (decision != 'b' || decision != 'd'){
-                        carSpeed = c2.decision(decision);
+        while(choice != 'l' || choice != 'm'){
+        System.out.println("Do you want to operate the car manually or generate a loop? m = manually, l = loop");
+        choice = sc.next().charAt(0);
+
+            if(choice == 'l'){
+                carSpeed = 0;
+                while (fuel < 15.0 && fuel >= 0.0){
+                    allowedFuel = 15.0 - fuel;
+                    for (int i = 0; i < allowedFuel; i++){
+                        fuel += f.loopRefuel();
+                        System.out.println("Fuel is now at " + fuel + " gallons");
+                    }
+                }
+                while (fuel > 0.0){
+                    if(carSpeed > 0){
+                        carSpeed = 0;
+                    }
+                        for(int i = 0; i < maxSpeed/5; i++){
+                            if (fuel > 0.0 && carSpeed < maxSpeed){
+                                carSpeed = c.accelerate(carSpeed);
+                                distance2 = arr.addDistance(carSpeed);
+                                distance += distance2;
+                                odometer += o.odometerAdjuster(distance, odometer, carSpeed);
+                                fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
+                                    if(fuel <= 0.0){
+                                        System.out.println("This iteration would decrease the fuel below 0. The trip is over.");
+                                        fuel = 0.0;
+                                        break;
+                                    }
+                                System.out.printf("%15s %11s %5s %5s\n","|Miles in last 30secs|", "| Odometer |", "| MPH |", "|Fuel gal left|");
+                                System.out.format("%20.2f %13.2f %6s %12.2f\n", distance2, odometer, carSpeed, fuel);
+                            }
+                        }
+                    for(int i = 0; i < maxSpeed/5; i++){
+                        if (fuel > 0.0){
+                        carSpeed = c.brake(carSpeed);
                         distance2 = arr.addDistance(carSpeed);
                         distance += distance2;
                         odometer += o.odometerAdjuster(distance, odometer, carSpeed);
                         fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
+                            if(fuel <= 0.0){
+                                System.out.println("This iteration would decrease the fuel below 0. The trip is over.");
+                                fuel = 0.0;
+                                carSpeed = 0;
+                                break;
+                            }
                         System.out.printf("%15s %11s %5s %5s\n","|Miles in last 30secs|", "| Odometer |", "| MPH |", "|Fuel gal left|");
                         System.out.format("%20.2f %13.2f %6s %12.2f\n", distance2, odometer, carSpeed, fuel);
-                    } else continue;
-                } else if(carSpeed > 0 && carSpeed <= maxSpeed - 5){
-                    System.out.println("Do you wish to accelerate, brake, continue at current speed, or drive for X seconds at current speed? a = accelerate, b = brake, c = continue, d = drive for x seconds, z = terminate program.");
-                    decision = sc.next().charAt(0);
-                    if(decision == 'z'){
-                        System.exit(0);
-                    } else if (decision == 'd'){
-                        System.out.println("How many seconds do you want to drive at current speed?");
-                        sec = sc.nextInt();
-                        secs = f.secsCheck(sec, fuel, carSpeed);
-                        carSpeed = c2.decision(decision);
-                        distance2 = arr.addDistance(carSpeed) * (secs/30.0);
-                        distance += distance2;
-                        odometer += o.odometerAdjuster(distance, odometer, carSpeed);
-                        fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
-                        System.out.printf("%15s %11s %15s %10s %5s\n","|MPH maintained|", "|For # secs|", " |Miles travelled|", "| Odometer |", "|Fuel gal left|");
-                        System.out.format("%15s %9s %17.2f %16.2f %11.2f\n", carSpeed, secs, distance2, odometer, fuel);
-                    } else {
-                        carSpeed = c2.decision(decision);
-                        distance2 = arr.addDistance(carSpeed);
-                        distance += distance2;
-                        odometer += o.odometerAdjuster(distance, odometer, carSpeed);
-                        fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
-                        System.out.printf("%15s %11s %5s %5s\n","|Miles in last 30secs|", "| Odometer |", "| MPH |", "|Fuel gal left|");
-                        System.out.format("%20.2f %13.2f %6s %11.2f\n", distance2, odometer, carSpeed, fuel);
+                        }
                     }
-                } else if(carSpeed == maxSpeed){
-                    System.out.println("Car: AT MAX SPEED. Can only brake or maintain current speed. b = brake, c = continue, d = drive for x seconds, z = terminate program.");
-                    decision = sc.next().charAt(0);
-                    if(decision == 'z'){
-                        System.exit(0);
-                    } else if (decision != 'a' && decision != 'd'){
-                        carSpeed = c2.decision(decision);
-                        distance2 = arr.addDistance(carSpeed);
-                        distance += distance2;
-                        odometer += o.odometerAdjuster(distance, odometer, carSpeed);
-                        fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
-                        System.out.printf("%15s %11s %5s %5s\n","|Miles in last 30secs|", "| Odometer |", "| MPH |", "|Fuel gal left|");
-                        System.out.format("%20.2f %13.2f %6s %11.2f\n", distance2, odometer, carSpeed, fuel);
-                    } else if (decision == 'd'){
-                        System.out.println("How many seconds do you want to drive at current speed?");
-                        sec = sc.nextInt();
-                        secs = f.secsCheck(sec, fuel, carSpeed);
-                        carSpeed = c2.decision(decision);
-                        distance2 = arr.addDistance(carSpeed) * (secs/30.0);
-                        distance += distance2;
-                        odometer += o.odometerAdjuster(distance, odometer, carSpeed);
-                        fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
-                        System.out.printf("%15s %11s %15s %10s %5s\n","|MPH maintained|", "|For # secs|", " |Miles travelled|", "| Odometer |", "|Fuel gal left|");
-                        System.out.format("%15s %9s %17.2f %16.2f %11.2f\n", carSpeed, secs, distance2, odometer, fuel);
-                    } else continue;
+                }
             }
+
+            else if(choice == 'm'){
+                while(carSpeed >= 0 || carSpeed <= maxSpeed){
+                    if(carSpeed == 0){
+                        System.out.println("Car: STOPPED. Can only accelerate or maintain stopped position. a = accelerate, c = continue, z = terminate program.");
+                        decision = sc.next().charAt(0);
+                            if(decision == 'z'){
+                                System.exit(0);
+                            } else if (decision != 'b' || decision != 'd'){
+                                carSpeed = c2.decision(decision);
+                                distance2 = arr.addDistance(carSpeed);
+                                distance += distance2;
+                                odometer += o.odometerAdjuster(distance, odometer, carSpeed);
+                                fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
+                                System.out.printf("%15s %11s %5s %5s\n","|Miles in last 30secs|", "| Odometer |", "| MPH |", "|Fuel gal left|");
+                                System.out.format("%20.2f %13.2f %6s %12.2f\n", distance2, odometer, carSpeed, fuel);
+                            } else continue;
+                        } else if(carSpeed > 0 && carSpeed <= maxSpeed - 5){
+                            System.out.println("Do you wish to accelerate, brake, continue at current speed, or drive for X seconds at current speed? a = accelerate, b = brake, c = continue, d = drive for x seconds, z = terminate program.");
+                            decision = sc.next().charAt(0);
+                            if(decision == 'z'){
+                                System.exit(0);
+                            } else if (decision == 'd'){
+                                System.out.println("How many seconds do you want to drive at current speed?");
+                                secs = f.secsCheck(fuel, carSpeed);
+                                carSpeed = c2.decision(decision);
+                                distance2 = arr.addDistance(carSpeed) * (secs/30.0);
+                                distance += distance2;
+                                odometer += o.odometerAdjuster(distance, odometer, carSpeed);
+                                fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
+                                System.out.printf("%15s %11s %15s %10s %5s\n","|MPH maintained|", "|For # secs|", " |Miles travelled|", "| Odometer |", "|Fuel gal left|");
+                                System.out.format("%15s %9s %17.2f %16.2f %11.2f\n", carSpeed, secs, distance2, odometer, fuel);
+                            } else {
+                                carSpeed = c2.decision(decision);
+                                distance2 = arr.addDistance(carSpeed);
+                                distance += distance2;
+                                odometer += o.odometerAdjuster(distance, odometer, carSpeed);
+                                fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
+                                System.out.printf("%15s %11s %5s %5s\n","|Miles in last 30secs|", "| Odometer |", "| MPH |", "|Fuel gal left|");
+                                System.out.format("%20.2f %13.2f %6s %11.2f\n", distance2, odometer, carSpeed, fuel);
+                            }
+                        } else if(carSpeed == maxSpeed){
+                            System.out.println("Car: AT MAX SPEED. Can only brake or maintain current speed. b = brake, c = continue, d = drive for x seconds, z = terminate program.");
+                            decision = sc.next().charAt(0);
+                            if(decision == 'z'){
+                                System.exit(0);
+                            } else if (decision != 'a' && decision != 'd'){
+                                carSpeed = c2.decision(decision);
+                                distance2 = arr.addDistance(carSpeed);
+                                distance += distance2;
+                                odometer += o.odometerAdjuster(distance, odometer, carSpeed);
+                                fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
+                                System.out.printf("%15s %11s %5s %5s\n","|Miles in last 30secs|", "| Odometer |", "| MPH |", "|Fuel gal left|");
+                                System.out.format("%20.2f %13.2f %6s %11.2f\n", distance2, odometer, carSpeed, fuel);
+                            } else if (decision == 'd'){
+                                System.out.println("How many seconds do you want to drive at current speed?");
+                                secs = f.secsCheck(fuel, carSpeed);
+                                carSpeed = c2.decision(decision);
+                                distance2 = arr.addDistance(carSpeed) * (secs/30.0);
+                                distance += distance2;
+                                odometer += o.odometerAdjuster(distance, odometer, carSpeed);
+                                fuel -= f.fuelAdjuster(fuel, distance2, carSpeed);
+                                System.out.printf("%15s %11s %15s %10s %5s\n","|MPH maintained|", "|For # secs|", " |Miles travelled|", "| Odometer |", "|Fuel gal left|");
+                                System.out.format("%15s %9s %17.2f %16.2f %11.2f\n", carSpeed, secs, distance2, odometer, fuel);
+                            } else continue;
+                        }
+                }
+            } else System.out.println("Invalid input. Choose again.");
         }
         sc.close();
     }
@@ -125,6 +181,7 @@ class Car{
     // class variables
     private int yearModel, speed, maxSpeed;
     public double fuel;
+    public double usedFuel = FuelGauge.getUsedFuel();
     private String make;
     private char x, decision;
 
@@ -198,8 +255,8 @@ class Car{
     }
     public double decision2(char x){
         switch(x){
-            case 'f': return FuelGauge.refuel(fuel);
-            default: return FuelGauge.refuel(fuel);
+            case 'f': return FuelGauge.refuel(fuel, usedFuel);
+            default: return FuelGauge.refuel(fuel, usedFuel);
         }
     }
 
@@ -234,7 +291,7 @@ static class FuelGauge extends Car{
         public int speed, requestedSecs;
         private double allowedSecs;
         public static double fuel, distance2, newTime, newDist;
-        public static double addFuel, usedFuel, newFuel, allowedFuel;
+        public static double addFuel, usedFuel, newFuel, allowedFuel, minFuel;
         
         // Scanner object
         static Scanner sc = new Scanner(System.in);
@@ -245,54 +302,70 @@ static class FuelGauge extends Car{
             this.speed = speed;
         }
 
-        public int secsCheck(int secs, double fuel, int speed){
-            allowedSecs = (((fuel - (speed * 1/24)) * 24) / speed) * 3600.0;
-            requestedSecs = secs;
+        public int secsCheck(double fuel, int speed){
+            requestedSecs = sc.nextInt();
+            allowedSecs = ((fuel * 24.0)/speed)*3600.0;
+            //(((fuel - (speed * 1/24)) * 24) / speed) * 3600.0;
             while(requestedSecs > allowedSecs - 1){
-                System.out.println("That distance would use more than a 15 gallon tank and cannot be completed. Please enter a shorter time to travel at the current speed.");
+                System.out.println("The max amount of seconds allowed is: " + (allowedSecs - 1));
+                System.out.println("That distance would use more than a 15 gallon tank and cannot be completed!! Please enter a shorter time to travel at the current speed.");
                 requestedSecs = sc.nextInt();
             } return requestedSecs;
         }
         // Fuel gauge adjuster method
         public double fuelAdjuster(double fuel, double dist, int speed){
-            usedFuel = (dist * (1.0/24.0) + (Math.random()/100.0));
-            System.out.println("Used Fuel is: " + usedFuel);
+            usedFuel = (dist * (1.0/24.0) + (Math.random()/10.0));
             while(usedFuel > 15.0){
                 System.out.println("That distance would use more than a 15 gallon tank and cannot be completed. Please enter a shorter time to travel at the current speed.");
                     newTime = sc.nextDouble();
                     newDist = getSpeed(speed) * (newTime/3600.0);
-                    usedFuel = (newDist * (1.0/24.0) + (Math.random()/100.0));  
+                    usedFuel = (newDist * (1.0/24.0) + (Math.random()/200.0));  
             }
-                while(fuel - usedFuel + newFuel <= 0.0){
+                /*while(fuel - usedFuel + newFuel <= 0.0){
                     System.out.println("This trip would decrease the fuel to 0 or less.");
-                    newFuel = refuel(fuel);
+                    newFuel = refuel(fuel, usedFuel) + Math.random()/10.0;
                         while(newFuel + fuel - usedFuel > 15.0){
                             allowedFuel = 15.0 - fuel - usedFuel;
                             System.out.printf("This amount is too large for the 15 gal tank! The most that can be added is: %.2f gallons.", allowedFuel);
-                            newFuel = refuel(fuel);
+                            newFuel = refuel(fuel, usedFuel) + Math.random()/10.0;
                         if(fuel - usedFuel + newFuel > 0.0){
                             return ((newFuel * (-1.0)) + usedFuel);
                         }
-                        }
-                } return usedFuel;
+                        } */
+                return usedFuel + newFuel;
             }            
 
-        public static double refuel(double fuel){
+        public static double refuel(double fuel, double usedFuel){
             System.out.println("How many gallons do you want to refuel?");
-                addFuel = sc.nextDouble();
+                addFuel = sc.nextDouble() + Math.random()/10.0;
                 if(addFuel + fuel > 15.0){
                     while (addFuel + fuel > 15.0){
                         allowedFuel = 15.0 - fuel;
                         System.out.printf("This amount is too large for the 15 gal tank. The most that can be added is: %.2f gallons.", allowedFuel);
                         System.out.println(" Enter a new amount.");
-                        addFuel = refuel(fuel);
+                        addFuel = refuel(fuel, usedFuel) + Math.random()/10.0;
                     }
                     return addFuel;
-                } else return addFuel;
+                }
+                else if(addFuel + fuel - usedFuel <= 0.0){
+                    while(addFuel + fuel - usedFuel <= 0.0){
+                        minFuel = usedFuel;
+                        System.out.printf("This amount of fuel is too small to complete this trip. The least that can be added is: %.2f gallons.", minFuel);
+                        addFuel = sc.nextDouble() + Math.random()/10.0;
+                    }
+                } return addFuel;
+                }
+        
+        public static double loopRefuel(){
+            return 1.0;
         }
         // Fuel gauge getter method
         public double getFuelLevel(){
             return fuel;
+        }
+
+        public static double getUsedFuel(){
+            return usedFuel;
         }
     } // End FuelGauge class
 // Odometer class
