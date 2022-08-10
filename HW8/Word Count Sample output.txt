@@ -1,0 +1,3 @@
+Number of times a cast member spoke: 1659
+Number of words minus cast speaker indicator: 9648
+The number of words in file is: 11307

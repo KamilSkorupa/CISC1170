@@ -1,0 +1,8 @@
+Input the first number: 
+12
+Input the mathematical symbol you want to use, +, -, /, *, %, ^: 
+^
+Input the second number: 
+3
+The result of equation: 12.0 ^ 3.0 is: 1728.0
+Do you want to enter a new formula? Press y or Y for yes, or anything else to exit program.
